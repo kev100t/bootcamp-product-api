@@ -1,0 +1,27 @@
+AWSTemplateFormationVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  SaveHelloFunction:
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: handler.saveHello
+      Runtime: nodejs18.x
+      CodeUri: ./hello
+      Policies: 
+        - DynamoDBCrudPolicy:
+          TableName: !Ref GreetingTable
+      Enviroment:
+        Variables:
+          GREETINGS_TABLE: !Ref GreetingTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: POST
+
+# Outputs:
+#   MyApi:
+#     Description: 'URL'
+
