@@ -1,27 +1,97 @@
-AWSTemplateFormationVersion: '2010-09-09'
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
 Resources:
-  SaveHelloFunction:
+  CreateProductFunction:
     Type: AWS::Serverless::Function
     Properties: 
-      Handler: handler.saveHello
+      Handler: handler.create
       Runtime: nodejs18.x
-      CodeUri: ./hello
+      CodeUri: ./src
       Policies: 
         - DynamoDBCrudPolicy:
-          TableName: !Ref GreetingTable
-      Enviroment:
+            TableName: !Ref ProductTable
+      Environment:
         Variables:
-          GREETINGS_TABLE: !Ref GreetingTable
+          GREETINGS_TABLE: !Ref ProductTable
       Events:
         Api:
           Type: Api
           Properties:
-            Path: /hello
+            Path: /product
             Method: POST
+  ListProductFunction:
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: handler.list
+      Runtime: nodejs18.x
+      CodeUri: ./src
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref ProductTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /product
+            Method: GET
+  GetProductFunction:
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: handler.get
+      Runtime: nodejs18.x
+      CodeUri: ./src
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref ProductTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /product/{id}
+            Method: GET
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: handler.update
+      Runtime: nodejs18.x
+      CodeUri: ./src
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref ProductTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /product/{id}
+            Method: PUT
+  DeleteProductFunction:
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: handler.delete
+      Runtime: nodejs18.x
+      CodeUri: ./src
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref ProductTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /product/{id}
+            Method: DELETE
 
-# Outputs:
-#   MyApi:
-#     Description: 'URL'
-
+  ProductTable:
+    Type: AWS::Serverless::SimpleTable
